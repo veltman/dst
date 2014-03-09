@@ -1,0 +1,23 @@
+Miami, FL
+San Francisco, CA
+Los Angeles, CA
+Seattle, WA
+Portland, OR
+Las Vegas, NV
+Denver, CO
+Houston, TX
+Dallas, TX
+Chicago, IL
+New Orleans, LA
+New York, NY
+Boston, MA
+Philadelphia, PA
+Washington, DC
+Atlanta, GA
+Nashville, TN
+Cleveland, OH
+Charlotte, NC
+Detroit, MI
+Boise, ID
+Salt Lake City, UT
+Jackson, MS

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Daylight Saving Time</title>
+    <meta charset="utf-8">
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic' rel='stylesheet' type='text/css'>
+    <style>
+
+    body {
+      font-size: 12px;
+      font-family: "Lato", Helvetica, Arial, Verdana, sans-serif;
+    }
+
+    a {
+      text-decoration: none;
+      color: steelblue;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    table {
+      margin-left: auto;
+      margin-right: auto;
+      border-collapse: collapse;
+    }
+
+    tr.row-state {
+      background-color: #dedede;
+    }
+
+    td,th {
+      border: 0;      
+      padding: 2px 6px;      
+    }
+
+    th.sorting {
+      color: steelblue;
+    }
+
+    td {
+      border-top: 1px solid #000;
+      text-align: center;
+    }
+
+    td.country,td.state {
+      text-align: left;
+    }
+
+    td.rank {
+      text-align: right;
+    }
+
+    th {
+      cursor: pointer;
+    }
+
+    div.header {
+      text-align: center;
+      font-weight: bold;
+      font-size: 22px;
+    }
+
+    div.subheader {
+      text-align: center;
+      font-style: italic;
+      padding-bottom: 8px;
+      font-size: 18px;
+    }
+
+	div.disclaimer {
+		text-align: center;
+		font-style: italic;
+		padding-bottom: 16px;
+		font-style: italic;
+		font-size: 13px;
+	}
+
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">2014 Winter Olympics medal counts</div>
+      <div class="subheader">With US states as separate countries</div>
+      <div class="disclaimer">State affiliations based on <a href="http://www.teamusa.org/">teamusa.org</a>. Doesn't include hockey yet.</div>
+      <table>
+        <thead>
+          <th></th>
+          <th class="sortable">Country</th>
+          <th class="sortable">Gold</th>
+          <th class="sortable">Silver</th>
+          <th class="sortable">Bronze</th>
+          <th class="sortable sorting">Total</th>
+        </thead>
+        <tbody>
+        </tbody>        
+      </table>
+    </div>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://d3js.org/queue.v1.min.js"></script>
+    <script>
+
+      var sortDir = -1, sortCol;
+
+      var drawSunsets = function(city) {
+        d3.json(city,function(err,data){
+
+        });
+      };
+
+      drawSunsets("new-york");
+
+    </script>
+  </body>
+</html>
