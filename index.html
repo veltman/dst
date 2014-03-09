@@ -20,40 +20,10 @@
       text-decoration: underline;
     }
 
-    table {
+    div.container {
+      width: 600px;
       margin-left: auto;
       margin-right: auto;
-      border-collapse: collapse;
-    }
-
-    tr.row-state {
-      background-color: #dedede;
-    }
-
-    td,th {
-      border: 0;      
-      padding: 2px 6px;      
-    }
-
-    th.sorting {
-      color: steelblue;
-    }
-
-    td {
-      border-top: 1px solid #000;
-      text-align: center;
-    }
-
-    td.country,td.state {
-      text-align: left;
-    }
-
-    td.rank {
-      text-align: right;
-    }
-
-    th {
-      cursor: pointer;
     }
 
     div.header {
@@ -69,47 +39,200 @@
       font-size: 18px;
     }
 
-	div.disclaimer {
-		text-align: center;
-		font-style: italic;
-		padding-bottom: 16px;
-		font-style: italic;
-		font-size: 13px;
-	}
+    g.sun path {
+      stroke: #fadd6b;
+      stroke-width: 2px;
+      fill: #fadd6b;
+    }
+
+    g.night rect {
+      stroke: none;
+      fill: #666;
+    }
+
+    g.awake rect {
+      opacity: 0.3;
+      stroke: none;
+      fill: #fff;
+    }
+
+    g.work rect {
+      opacity: 0.35;
+      stroke: none;
+      fill: tomato;
+    }
 
     </style>
   </head>
   <body>
     <div class="container">
-      <div class="header">2014 Winter Olympics medal counts</div>
-      <div class="subheader">With US states as separate countries</div>
-      <div class="disclaimer">State affiliations based on <a href="http://www.teamusa.org/">teamusa.org</a>. Doesn't include hockey yet.</div>
-      <table>
-        <thead>
-          <th></th>
-          <th class="sortable">Country</th>
-          <th class="sortable">Gold</th>
-          <th class="sortable">Silver</th>
-          <th class="sortable">Bronze</th>
-          <th class="sortable sorting">Total</th>
-        </thead>
-        <tbody>
-        </tbody>        
-      </table>
+      <div class="header">Effects of Daylight Saving Time</div>
+      <div class="subheader">Showing the effect of Daylight Saving Time on            .data([workTimes])
+ daylight experienced.</div>
+      <div class="form">
+        City: <select id="city"><option selected>New York, NY</option><option>Miami, FL</option></select>
+        <span class="latlng"></span>
+        <span class="timezone"></span>
+      </div>
+      <div class="chart"></div>
     </div>
     <script src="http://d3js.org/d3.v3.min.js"></script>
-    <script src="http://d3js.org/queue.v1.min.js"></script>
     <script>
 
-      var sortDir = -1, sortCol;
+      var chart = d3.select("div.chart");
 
-      var drawSunsets = function(city) {
-        d3.json(city,function(err,data){
+      var margin = {top: 20, right: 10, bottom: 20, left: 10};
+      var w = 600 - margin.right - margin.left, h = 250 - margin.bottom - margin.top;
+
+      var svg = chart.append("svg")
+                  .attr("width",w+margin.left+margin.right)
+                  .attr("height",h+margin.top+margin.bottom)
+                  .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      var workTimes = ["09:00","18:00"], awakeTimes = ["07:30","23:30"], city = "New York, NY", data;
+
+      svg.append("g")
+        .attr("class","night")
+          .append("rect")
+          .attr("width",w)
+          .attr("height",h)
+          .attr("x",0)
+          .attr("y",0)
+          .attr("class","night");
+
+      //Do labels here
+
+      var sun = svg.append("g")
+                  .attr("class","sun");
+
+      var awake = svg.append("g")
+                    .attr("class","awake");
+
+      var work = svg.append("g")
+                    .attr("class","work");
+
+      var x = d3.scale.linear().domain([0,364]).range([0,w]);
+      var y = d3.scale.linear().domain([0,24]).range([0,h]);
+
+      var line = d3.svg.line()
+        .interpolate("basis")
+        .x(function(d,i) {
+
+          i = (i > 364) ? 729 - i : i;
+          return x(i > 364 ? 365 - (i - 364) : i); 
+        })
+        .y(function(d,i) {
+          i = (i > 364) ? 729 - i : i;
+          var dst = i >= 68 && i <= 306;
+          return y(parseTime(d,dst));
+        });
+
+      var drawSunsets = function() {
+        d3.json("cities/"+city.split(",")[0].replace(" ","_")+".json",function(err,j){
+          data = j;
+
+          sun.selectAll("path")
+            .data([data.sun])
+            .enter()
+            .append("path");
+
+          updateSun();
+
+          awake.selectAll("rect")
+            .data([awakeTimes])
+            .enter()
+            .append("rect");
+
+          updateAwake();
+
+          work.selectAll("rect")
+            .data([workTimes])
+            .enter()
+            .append("rect");
+
+          updateWork();
+
 
         });
       };
 
-      drawSunsets("new-york");
+      d3.select("select#city").on("change",function(){
+        city = this.value;
+        drawSunsets();
+      });
+
+      d3.select("select#awake-times-0").on("change",function(){
+        awakeTimes[0] = this.value;
+        updateAwake();
+      });
+
+      d3.select("select#awake-times-1").on("change",function(){
+        awakeTimes[1] = this.value;
+        updateAwake();
+      });
+
+      d3.select("select#work-times-0").on("change",function(){
+        workTimes[0] = this.value;
+        updateWork();
+      });
+
+      d3.select("select#work-times-1").on("change",function(){
+        workTimes[1] = this.value;
+        updateWork();
+      });
+
+      drawSunsets();
+
+      function parseTime(t,dst) {
+        return d3.sum(t.split(":").map(function(d,i){
+          return parseInt(d)/(i ? 60 : 1);
+        }))+(dst ? 1 : 0);
+      }
+
+      function updateSun() {
+        sun.select("path")
+          .attr("d",function(d){
+            rises = d.map(function(f){
+              return f[0];
+            });
+
+            sets = d.map(function(f){
+              return f[1];
+            });
+            
+            sets.reverse();
+
+            var all = rises.concat(sets);
+
+            return line(all);
+
+          });
+      }
+
+      function updateAwake() {
+        awake.select("rect")
+          .attr("x",0)
+          .attr("width",w)
+          .attr("y",function(d){
+            return y(parseTime(d[0]));
+          })
+          .attr("height",function(d){
+            return y(parseTime(d[1])) - y(parseTime(d[0]));
+          });
+      }
+
+      function updateWork() {
+        work.select("rect")
+          .attr("x",0)
+          .attr("width",w)
+          .attr("y",function(d){
+            return y(parseTime(d[0]));
+          })
+          .attr("height",function(d){
+            return y(parseTime(d[1])) - y(parseTime(d[0]));
+          });
+      }
 
     </script>
   </body>
