@@ -49,14 +49,8 @@
       stroke: none;
     }
 
-    g.sun path, rect.sun, path.with {
+    g.sun path, rect.sun {
       fill: #fadd6b;
-    }
-
-    path.without {
-      fill: tomato;
-      stroke: black;
-      stroke-width: 2px;
     }
 
     g.night rect, rect.night {
@@ -67,13 +61,13 @@
     g.awake rect, rect.awake {
       opacity: 0.5;
       stroke: none;
-      fill: #fff;
+      fill: #333;
     }
 
     g.work rect, rect.work {
       opacity: 0.55;
       stroke: none;
-      fill: tomato;
+      fill: #7fc97f;
     }
 
     g.labels text {
@@ -82,7 +76,7 @@
       font-size: 12px;
     }
 
-    g.labels path {
+    g.labels path,g.bg path {
       stroke-width: 1px;
       stroke: #fff;
       fill: none;
@@ -270,7 +264,7 @@
 
       var mainChart = d3.select("div.chart");
 
-      var margin = {top: 4, right: 20, bottom: 20, left: 20};
+      var margin = {top: 20, right: 20, bottom: 20, left: 20};
       var w = Math.min(Math.max(window.innerWidth-40,400),800) - margin.right - margin.left, h = 250 - margin.bottom - margin.top;
 
       d3.select("div.container").style("width",w+"px");
@@ -280,6 +274,8 @@
                   .attr("height",h+margin.top+margin.bottom)
                   .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      var bg = svg.append("g").attr("class","bg");
 
       var x = d3.scale.linear().domain([0,364]).range([0,w]);
       var y = d3.scale.linear().domain([0,24]).range([0,h]);
@@ -309,10 +305,11 @@
       //Do labels here
       var labels = svg.append("g")
         .attr("class","labels")
-        .selectAll("g")
+        .selectAll("g")        
         .data(["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"])
         .enter()
-          .append("g");
+          .append("g")
+          .attr("transform","translate( 0 -"+margin.top+" )");
 
       labels.append("text")
         .text(function(d){
@@ -329,7 +326,7 @@
         .append("path")
           .attr("d",function(d,i){
             i++;
-            return "M"+(w*i/12)+",0 L"+(w*i/12)+","+h;
+            return "M"+(w*i/12)+",0 L"+(w*i/12)+","+(h+margin.top);
           });
 
       var hours = svg.append("g")
@@ -369,12 +366,27 @@
       var work = svg.append("g")
                     .attr("class","work");
 
-      svg.append("rect")
+      bg.append("rect")
         .attr("class","night")
         .attr("width",w)
         .attr("height",margin.bottom)
         .attr("x",0)
         .attr("y",h);
+
+      bg.append("rect")
+        .attr("transform","translate ( 0 -"+margin.top+" )")
+        .attr("class","night")
+        .attr("width",w)
+        .attr("height",margin.top)
+        .attr("x",0)
+        .attr("y",0)
+        
+
+      bg.append("path")
+        .attr("d","M0,0 L"+w+",0");
+
+      bg.append("path")
+        .attr("d","M0,"+h+" L"+w+","+h);
 
       var legend = svg.append("g")
                     .attr("class","legend")
@@ -511,10 +523,18 @@
 
         awakeTimes[id] = this.value;
 
-        awake.selectAll("rect")
-          .data([["0:00",awakeTimes[0]],[awakeTimes[1],"24:00"]])
+        if (parseTime(awakeTimes[1]) < parseTime(awakeTimes[0])) {
+          awakeData = [[awakeTimes[1],awakeTimes[0]],["24:00","24:00"]];
 
-        if (parseTime(awakeTimes[1]) < parseTime(awakeTimes[0])) awakeTimes[1] = "24:00";
+          console.log(awakeData);
+
+        } else {
+          awakeData = [["0:00",awakeTimes[0]],[awakeTimes[1],"24:00"]];
+        }
+
+        awake.selectAll("rect")
+            .data(awakeData);
+
         updateAwake();
       });
 
@@ -525,6 +545,7 @@
         workTimes[id] = this.value;
 
         if (parseTime(workTimes[1]) < parseTime(workTimes[0])) workTimes[1] = "24:00";
+
         updateWork();
       });
 
@@ -625,10 +646,27 @@
 
               processor = function(d){
 
-                var bottom = Math.max(a[0],d[0]);
-                var top = Math.min(a[1],d[1]);
 
-                return top-bottom;
+                if (a[0] <= d[1]) {
+                  var bottom = Math.max(a[0],d[0]);
+
+                  if (a[1] < a[0]) {
+                    var top = d[1];
+                  } else {
+                    var top = Math.min(a[1],d[1]);
+                  }
+
+                  return top-bottom;
+                } else {
+
+                  if (a[1] < d[0]) {
+                    return 0;
+                  }
+
+                  return a[1] - d[0];
+
+                }
+
               };
 
             } else {
@@ -670,7 +708,7 @@
 
               processor = function(d){
 
-                return d[0] < a;
+                return d[0] <= a && d[1] >= a;
 
               };
 
@@ -680,7 +718,7 @@
 
               processor = function(d){
 
-                return w < d[1];
+                return w <= d[1] && w >= d[0];
 
               };
 
