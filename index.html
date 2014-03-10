@@ -27,39 +27,81 @@
     }
 
     div.header {
-      text-align: center;
       font-weight: bold;
-      font-size: 22px;
+      font-size: 28px;
     }
 
     div.subheader {
-      text-align: center;
-      font-style: italic;
       padding-bottom: 8px;
-      font-size: 18px;
+      font-size: 14px;
     }
 
     g.sun path {
       stroke: #fadd6b;
       stroke-width: 2px;
+    }
+
+    rect.sun {
+      stroke: none;
+    }
+
+    g.sun path, rect.sun, path.with {
       fill: #fadd6b;
     }
 
-    g.night rect {
+    path.without {
+      fill: tomato;
+      stroke: black;
+      stroke-width: 2px;
+    }
+
+    g.night rect, rect.night {
       stroke: none;
       fill: #666;
     }
 
-    g.awake rect {
-      opacity: 0.3;
+    g.awake rect, rect.awake {
+      opacity: 0.4;
       stroke: none;
       fill: #fff;
     }
 
-    g.work rect {
-      opacity: 0.35;
+    g.work rect, rect.work {
+      opacity: 0.55;
       stroke: none;
       fill: tomato;
+    }
+
+    g.labels text {
+      text-anchor: middle;
+      fill: #fff;
+      font-size: 12px;
+    }
+
+    g.labels path {
+      stroke-width: 1px;
+      stroke: #fff;
+      fill: none;
+    }
+
+    g.hours path {
+      stroke-width: 1px;
+      stroke: #fff;
+      opacity: 0.4;
+      fill: none;
+      stroke-dasharray: 2,2;
+    }
+
+    g.hours text {
+      text-anchor: end;
+      fill: #000;
+      font-size: 11px;
+    }
+
+    g.legend text {
+      fill: #fff;
+      font-size: 12px;
+      text-anchor: start;
     }
 
     </style>
@@ -67,30 +109,103 @@
   <body>
     <div class="container">
       <div class="header">Effects of Daylight Saving Time</div>
-      <div class="subheader">Showing the effect of Daylight Saving Time on            .data([workTimes])
- daylight experienced.</div>
+      <div class="subheader">By <a href="http://noahveltman.com/twitter">Noah Veltman</a></div>
+      <div class="subheader">Showing the effect of Daylight Saving Time on actual daylight experienced.</div>
+      <div class="subheader"><strong>Caveats:</strong> Doesn't account for the fact that sunrise and sunset are gradual events, with durations that vary by season and latitude. Also not configured to allow for working the night shift.</div>
       <div class="form">
-        City: <select id="city"><option selected>New York, NY</option><option>Miami, FL</option></select>
+        City:&nbsp;<select id="city">
+          <option selected>New York, NY</option>
+          <option>Los Angeles, CA</option>
+          <option>San Francisco, CA</option>
+          <option>Seattle, WA</option>
+          <option>Chicago, IL</option>
+          <option>Washington, DC</option>
+          <option>Miami, FL</option>
+          <option>Portland, OR</option>
+          <option>Las Vegas, NV</option>
+          <option>Denver, CO</option>
+          <option>Houston, TX</option>
+          <option>Dallas, TX</option>
+          <option>New Orleans, LA</option>
+          <option>Boston, MA</option>
+          <option>Philadelphia, PA</option>
+          <option>Atlanta, GA</option>
+          <option>Nashville, TN</option>
+          <option>Cleveland, OH</option>
+          <option>Charlotte, NC</option>
+          <option>Detroit, MI</option>
+          <option>Salt Lake City, UT</option>
+        </select>
         <span class="latlng"></span>
         <span class="timezone"></span>
       </div>
+      <div class="form">
+        <span class="awake">
+        Awake from&nbsp;<select class="time" id="awake-times-0">
+          <option value="0:00">12:00am</option><option value="0:15">12:15am</option><option value="0:30">12:30am</option><option value="0:45">12:45am</option><option value="1:00">1:00am</option><option value="1:15">1:15am</option><option value="1:30">1:30am</option><option value="1:45">1:45am</option><option value="2:00">2:00am</option><option value="2:15">2:15am</option><option value="2:30">2:30am</option><option value="2:45">2:45am</option><option value="3:00">3:00am</option><option value="3:15">3:15am</option><option value="3:30">3:30am</option><option value="3:45">3:45am</option><option value="4:00">4:00am</option><option value="4:15">4:15am</option><option value="4:30">4:30am</option><option value="4:45">4:45am</option><option value="5:00">5:00am</option><option value="5:15">5:15am</option><option value="5:30">5:30am</option><option value="5:45">5:45am</option><option value="6:00">6:00am</option><option value="6:15">6:15am</option><option value="6:30">6:30am</option><option value="6:45">6:45am</option><option value="7:00" selected>7:00am</option><option value="7:15">7:15am</option><option value="7:30">7:30am</option><option value="7:45">7:45am</option><option value="8:00">8:00am</option><option value="8:15">8:15am</option><option value="8:30">8:30am</option><option value="8:45">8:45am</option><option value="9:00">9:00am</option><option value="9:15">9:15am</option><option value="9:30">9:30am</option><option value="9:45">9:45am</option><option value="10:00">10:00am</option><option value="10:15">10:15am</option><option value="10:30">10:30am</option><option value="10:45">10:45am</option><option value="11:00">11:00am</option><option value="11:15">11:15am</option><option value="11:30">11:30am</option><option value="11:45">11:45am</option><option value="12:00">12:00pm</option><option value="12:15">12:15pm</option><option value="12:30">12:30pm</option><option value="12:45">12:45pm</option><option value="13:00">1:00pm</option><option value="13:15">1:15pm</option><option value="13:30">1:30pm</option><option value="13:45">1:45pm</option><option value="14:00">2:00pm</option><option value="14:15">2:15pm</option><option value="14:30">2:30pm</option><option value="14:45">2:45pm</option><option value="15:00">3:00pm</option><option value="15:15">3:15pm</option><option value="15:30">3:30pm</option><option value="15:45">3:45pm</option><option value="16:00">4:00pm</option><option value="16:15">4:15pm</option><option value="16:30">4:30pm</option><option value="16:45">4:45pm</option><option value="17:00">5:00pm</option><option value="17:15">5:15pm</option><option value="17:30">5:30pm</option><option value="17:45">5:45pm</option><option value="18:00">6:00pm</option><option value="18:15">6:15pm</option><option value="18:30">6:30pm</option><option value="18:45">6:45pm</option><option value="19:00">7:00pm</option><option value="19:15">7:15pm</option><option value="19:30">7:30pm</option><option value="19:45">7:45pm</option><option value="20:00">8:00pm</option><option value="20:15">8:15pm</option><option value="20:30">8:30pm</option><option value="20:45">8:45pm</option><option value="21:00">9:00pm</option><option value="21:15">9:15pm</option><option value="21:30">9:30pm</option><option value="21:45">9:45pm</option><option value="22:00">10:00pm</option><option value="22:15">10:15pm</option><option value="22:30">10:30pm</option><option value="22:45">10:45pm</option><option value="23:00">11:00pm</option><option value="23:15">11:15pm</option><option value="23:30">11:30pm</option><option value="23:45">11:45pm</option><option value="24:00">12:00am</option>
+        </select>&nbsp;to&nbsp;<select class="time" id="awake-times-1">
+          <option value="0:00">12:00am</option><option value="0:15">12:15am</option><option value="0:30">12:30am</option><option value="0:45">12:45am</option><option value="1:00">1:00am</option><option value="1:15">1:15am</option><option value="1:30">1:30am</option><option value="1:45">1:45am</option><option value="2:00">2:00am</option><option value="2:15">2:15am</option><option value="2:30">2:30am</option><option value="2:45">2:45am</option><option value="3:00">3:00am</option><option value="3:15">3:15am</option><option value="3:30">3:30am</option><option value="3:45">3:45am</option><option value="4:00">4:00am</option><option value="4:15">4:15am</option><option value="4:30">4:30am</option><option value="4:45">4:45am</option><option value="5:00">5:00am</option><option value="5:15">5:15am</option><option value="5:30">5:30am</option><option value="5:45">5:45am</option><option value="6:00">6:00am</option><option value="6:15">6:15am</option><option value="6:30">6:30am</option><option value="6:45">6:45am</option><option value="7:00">7:00am</option><option value="7:15">7:15am</option><option value="7:30">7:30am</option><option value="7:45">7:45am</option><option value="8:00">8:00am</option><option value="8:15">8:15am</option><option value="8:30">8:30am</option><option value="8:45">8:45am</option><option value="9:00">9:00am</option><option value="9:15">9:15am</option><option value="9:30">9:30am</option><option value="9:45">9:45am</option><option value="10:00">10:00am</option><option value="10:15">10:15am</option><option value="10:30">10:30am</option><option value="10:45">10:45am</option><option value="11:00">11:00am</option><option value="11:15">11:15am</option><option value="11:30">11:30am</option><option value="11:45">11:45am</option><option value="12:00">12:00pm</option><option value="12:15">12:15pm</option><option value="12:30">12:30pm</option><option value="12:45">12:45pm</option><option value="13:00">1:00pm</option><option value="13:15">1:15pm</option><option value="13:30">1:30pm</option><option value="13:45">1:45pm</option><option value="14:00">2:00pm</option><option value="14:15">2:15pm</option><option value="14:30">2:30pm</option><option value="14:45">2:45pm</option><option value="15:00">3:00pm</option><option value="15:15">3:15pm</option><option value="15:30">3:30pm</option><option value="15:45">3:45pm</option><option value="16:00">4:00pm</option><option value="16:15">4:15pm</option><option value="16:30">4:30pm</option><option value="16:45">4:45pm</option><option value="17:00">5:00pm</option><option value="17:15">5:15pm</option><option value="17:30">5:30pm</option><option value="17:45">5:45pm</option><option value="18:00">6:00pm</option><option value="18:15">6:15pm</option><option value="18:30">6:30pm</option><option value="18:45">6:45pm</option><option value="19:00">7:00pm</option><option value="19:15">7:15pm</option><option value="19:30">7:30pm</option><option value="19:45">7:45pm</option><option value="20:00">8:00pm</option><option value="20:15">8:15pm</option><option value="20:30">8:30pm</option><option value="20:45">8:45pm</option><option value="21:00">9:00pm</option><option value="21:15">9:15pm</option><option value="21:30">9:30pm</option><option value="21:45">9:45pm</option><option value="22:00">10:00pm</option><option value="22:15">10:15pm</option><option value="22:30">10:30pm</option><option value="22:45">10:45pm</option><option value="23:00" selected>11:00pm</option><option value="23:15">11:15pm</option><option value="23:30">11:30pm</option><option value="23:45">11:45pm</option><option value="24:00">12:00am</option>
+        </select>
+       </span>
+        <span class="work">
+        Working from&nbsp;<select class="time" id="work-times-0">
+          <option value="0:00">12:00am</option><option value="0:15">12:15am</option><option value="0:30">12:30am</option><option value="0:45">12:45am</option><option value="1:00">1:00am</option><option value="1:15">1:15am</option><option value="1:30">1:30am</option><option value="1:45">1:45am</option><option value="2:00">2:00am</option><option value="2:15">2:15am</option><option value="2:30">2:30am</option><option value="2:45">2:45am</option><option value="3:00">3:00am</option><option value="3:15">3:15am</option><option value="3:30">3:30am</option><option value="3:45">3:45am</option><option value="4:00">4:00am</option><option value="4:15">4:15am</option><option value="4:30">4:30am</option><option value="4:45">4:45am</option><option value="5:00">5:00am</option><option value="5:15">5:15am</option><option value="5:30">5:30am</option><option value="5:45">5:45am</option><option value="6:00">6:00am</option><option value="6:15">6:15am</option><option value="6:30">6:30am</option><option value="6:45">6:45am</option><option value="7:00">7:00am</option><option value="7:15">7:15am</option><option value="7:30">7:30am</option><option value="7:45">7:45am</option><option value="8:00">8:00am</option><option value="8:15">8:15am</option><option value="8:30">8:30am</option><option value="8:45">8:45am</option><option value="9:00" selected>9:00am</option><option value="9:15">9:15am</option><option value="9:30">9:30am</option><option value="9:45">9:45am</option><option value="10:00">10:00am</option><option value="10:15">10:15am</option><option value="10:30">10:30am</option><option value="10:45">10:45am</option><option value="11:00">11:00am</option><option value="11:15">11:15am</option><option value="11:30">11:30am</option><option value="11:45">11:45am</option><option value="12:00">12:00pm</option><option value="12:15">12:15pm</option><option value="12:30">12:30pm</option><option value="12:45">12:45pm</option><option value="13:00">1:00pm</option><option value="13:15">1:15pm</option><option value="13:30">1:30pm</option><option value="13:45">1:45pm</option><option value="14:00">2:00pm</option><option value="14:15">2:15pm</option><option value="14:30">2:30pm</option><option value="14:45">2:45pm</option><option value="15:00">3:00pm</option><option value="15:15">3:15pm</option><option value="15:30">3:30pm</option><option value="15:45">3:45pm</option><option value="16:00">4:00pm</option><option value="16:15">4:15pm</option><option value="16:30">4:30pm</option><option value="16:45">4:45pm</option><option value="17:00">5:00pm</option><option value="17:15">5:15pm</option><option value="17:30">5:30pm</option><option value="17:45">5:45pm</option><option value="18:00">6:00pm</option><option value="18:15">6:15pm</option><option value="18:30">6:30pm</option><option value="18:45">6:45pm</option><option value="19:00">7:00pm</option><option value="19:15">7:15pm</option><option value="19:30">7:30pm</option><option value="19:45">7:45pm</option><option value="20:00">8:00pm</option><option value="20:15">8:15pm</option><option value="20:30">8:30pm</option><option value="20:45">8:45pm</option><option value="21:00">9:00pm</option><option value="21:15">9:15pm</option><option value="21:30">9:30pm</option><option value="21:45">9:45pm</option><option value="22:00">10:00pm</option><option value="22:15">10:15pm</option><option value="22:30">10:30pm</option><option value="22:45">10:45pm</option><option value="23:00">11:00pm</option><option value="23:15">11:15pm</option><option value="23:30">11:30pm</option><option value="23:45">11:45pm</option><option value="24:00">12:00am</option>
+        </select>&nbsp;to&nbsp;<select class="time" id="work-times-1">
+          <option value="0:00">12:00am</option><option value="0:15">12:15am</option><option value="0:30">12:30am</option><option value="0:45">12:45am</option><option value="1:00">1:00am</option><option value="1:15">1:15am</option><option value="1:30">1:30am</option><option value="1:45">1:45am</option><option value="2:00">2:00am</option><option value="2:15">2:15am</option><option value="2:30">2:30am</option><option value="2:45">2:45am</option><option value="3:00">3:00am</option><option value="3:15">3:15am</option><option value="3:30">3:30am</option><option value="3:45">3:45am</option><option value="4:00">4:00am</option><option value="4:15">4:15am</option><option value="4:30">4:30am</option><option value="4:45">4:45am</option><option value="5:00">5:00am</option><option value="5:15">5:15am</option><option value="5:30">5:30am</option><option value="5:45">5:45am</option><option value="6:00">6:00am</option><option value="6:15">6:15am</option><option value="6:30">6:30am</option><option value="6:45">6:45am</option><option value="7:00">7:00am</option><option value="7:15">7:15am</option><option value="7:30">7:30am</option><option value="7:45">7:45am</option><option value="8:00">8:00am</option><option value="8:15">8:15am</option><option value="8:30">8:30am</option><option value="8:45">8:45am</option><option value="9:00">9:00am</option><option value="9:15">9:15am</option><option value="9:30">9:30am</option><option value="9:45">9:45am</option><option value="10:00">10:00am</option><option value="10:15">10:15am</option><option value="10:30">10:30am</option><option value="10:45">10:45am</option><option value="11:00">11:00am</option><option value="11:15">11:15am</option><option value="11:30">11:30am</option><option value="11:45">11:45am</option><option value="12:00">12:00pm</option><option value="12:15">12:15pm</option><option value="12:30">12:30pm</option><option value="12:45">12:45pm</option><option value="13:00">1:00pm</option><option value="13:15">1:15pm</option><option value="13:30">1:30pm</option><option value="13:45">1:45pm</option><option value="14:00">2:00pm</option><option value="14:15">2:15pm</option><option value="14:30">2:30pm</option><option value="14:45">2:45pm</option><option value="15:00">3:00pm</option><option value="15:15">3:15pm</option><option value="15:30">3:30pm</option><option value="15:45">3:45pm</option><option value="16:00">4:00pm</option><option value="16:15">4:15pm</option><option value="16:30">4:30pm</option><option value="16:45">4:45pm</option><option value="17:00">5:00pm</option><option value="17:15">5:15pm</option><option value="17:30">5:30pm</option><option value="17:45">5:45pm</option><option value="18:00" selected>6:00pm</option><option value="18:15">6:15pm</option><option value="18:30">6:30pm</option><option value="18:45">6:45pm</option><option value="19:00">7:00pm</option><option value="19:15">7:15pm</option><option value="19:30">7:30pm</option><option value="19:45">7:45pm</option><option value="20:00">8:00pm</option><option value="20:15">8:15pm</option><option value="20:30">8:30pm</option><option value="20:45">8:45pm</option><option value="21:00">9:00pm</option><option value="21:15">9:15pm</option><option value="21:30">9:30pm</option><option value="21:45">9:45pm</option><option value="22:00">10:00pm</option><option value="22:15">10:15pm</option><option value="22:30">10:30pm</option><option value="22:45">10:45pm</option><option value="23:00">11:00pm</option><option value="23:15">11:15pm</option><option value="23:30">11:30pm</option><option value="23:45">11:45pm</option><option value="24:00">12:00am</option>
+        </select>
+       </span>
+
+      </div>
       <div class="chart"></div>
+      <div>
+        <div class="chart-title">Waking hours of daylight</div>
+        <div class="chart">
+          <svg id="awake-daylight-without"></svg>
+        </div>
+        <div class="chart">
+          <svg id="awake-daylight-with"></svg>
+        </div>      </div>
+      <div>
+        <div class="chart-title">Free hours of daylight (awake, not at work)</div>
+        <div class="chart">
+          <svg id="free-daylight-without"></svg>
+        </div>
+        <div class="chart">
+          <svg id="free-daylight-with"></svg>
+        </div>
+      </div>
     </div>
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script>
 
-      var chart = d3.select("div.chart");
+      var mainChart = d3.select("div.chart");
 
-      var margin = {top: 20, right: 10, bottom: 20, left: 10};
+      var margin = {top: 20, right: 20, bottom: 20, left: 20};
       var w = 600 - margin.right - margin.left, h = 250 - margin.bottom - margin.top;
 
-      var svg = chart.append("svg")
+      var svg = mainChart.append("svg")
                   .attr("width",w+margin.left+margin.right)
                   .attr("height",h+margin.top+margin.bottom)
                   .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      var workTimes = ["09:00","18:00"], awakeTimes = ["07:30","23:30"], city = "New York, NY", data;
+      var x = d3.scale.linear().domain([0,364]).range([0,w]);
+      var y = d3.scale.linear().domain([0,24]).range([0,h]);
+
+      var line = d3.svg.line()
+                  .interpolate("basis")
+                  .x(function(d,i) {
+
+                    i = (i > 364) ? 729 - i : i;
+                    return x(i > 364 ? 365 - (i - 364) : i); 
+                  })
+                  .y(function(d,i) {
+                    i = (i > 364) ? 729 - i : i;
+                    var dst = i >= 68 && i <= 306;
+                    return y(parseTime(d,dst));
+                  });
+
+      var workTimes = ["09:00","18:00"], awakeTimes = ["07:00","23:00"], city = "New York, NY", data;
 
       svg.append("g")
         .attr("class","night")
@@ -102,6 +217,59 @@
           .attr("class","night");
 
       //Do labels here
+      var labels = svg.append("g")
+        .attr("class","labels")
+        .selectAll("g")
+        .data(["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"])
+        .enter()
+          .append("g");
+
+      labels.append("text")
+        .text(function(d){
+          return d;
+        })
+        .attr("x",function(d,i){
+          return (w/24)+(i*w/12);
+        })
+        .attr("y",12);
+
+      labels.filter(function(d,i){
+        return i < 11;
+      })
+        .append("path")
+          .attr("d",function(d,i){
+            i++;
+            return "M"+(w*i/12)+",0 L"+(w*i/12)+","+h;
+          });
+
+      var hours = svg.append("g")
+        .attr("class","hours")
+        .selectAll("g")
+        .data([0,12,24])
+        .enter()
+          .append("g");
+
+      hours.append("text")
+        .text(function(d){
+          if (d == 12) return "12p";
+          return "12a";
+        })
+        .attr("x",0)
+        .attr("dx","-0.25em")
+        .attr("dy",function(d,i){
+          if (d < 24) return "1em";
+          return "0";
+        })
+        .attr("y",function(d,i){
+          if (!d) return 0;
+          if (d == 12) return h/2;
+          return h;
+        });
+
+      hours.append("path")
+        .attr("d",function(d,i){
+          return "M0,"+y(d)+"L"+w+","+y(d);
+        });
 
       var sun = svg.append("g")
                   .attr("class","sun");
@@ -109,28 +277,95 @@
       var awake = svg.append("g")
                     .attr("class","awake");
 
+      var latlng = d3.select("span.latlng");
+
+      var timezone = d3.select("span.timezone");
+
       var work = svg.append("g")
                     .attr("class","work");
 
-      var x = d3.scale.linear().domain([0,364]).range([0,w]);
-      var y = d3.scale.linear().domain([0,24]).range([0,h]);
+      svg.append("rect")
+        .attr("class","night")
+        .attr("width",w)
+        .attr("height",margin.bottom)
+        .attr("x",0)
+        .attr("y",h);
 
-      var line = d3.svg.line()
-        .interpolate("basis")
-        .x(function(d,i) {
+      var legend = svg.append("g")
+                    .attr("class","legend")
+                    .attr("transform", "translate(" + ((w-200)/2) + ")");
 
-          i = (i > 364) ? 729 - i : i;
-          return x(i > 364 ? 365 - (i - 364) : i); 
-        })
-        .y(function(d,i) {
-          i = (i > 364) ? 729 - i : i;
-          var dst = i >= 68 && i <= 306;
-          return y(parseTime(d,dst));
-        });
+      //Bespoke repetitive legend placement code!
+      legend.append("rect")
+        .attr("class","sun")
+        .attr("x",4)
+        .attr("y",h+4)
+        .attr("width",12)
+        .attr("height",12);
+
+      legend.append("text")
+        .text("Daylight")
+        .attr("y",h+4)
+        .attr("dy","10px")
+        .attr("x",20);
+
+      legend.append("rect")
+        .attr("class","awake")
+        .attr("x",74)
+        .attr("y",h+4)
+        .attr("width",12)
+        .attr("height",12);
+
+      legend.append("text")
+        .text("Asleep")
+        .attr("y",h+4)
+        .attr("dy","10px")
+        .attr("x",90);
+
+      legend.append("rect")
+        .attr("class","sun")
+        .attr("x",134)
+        .attr("y",h+4)
+        .attr("width",12)
+        .attr("height",12);
+
+      legend.append("rect")
+        .attr("class","work")
+        .attr("x",134)
+        .attr("y",h+4)
+        .attr("width",12)
+        .attr("height",12);
+
+      legend.append("text")
+        .text("At Work")
+        .attr("y",h+4)
+        .attr("dy","10px")
+        .attr("x",150);
+
+
+      var awakeWith = d3.select("svg#awake-daylight-with").attr("width",w).attr("height",h/2);
+      var awakeWithout = d3.select("svg#awake-daylight-without").attr("width",w).attr("height",h/2);
+
+      var microLine = d3.svg.line()
+                        .interpolate("basis")
+                        .x(function(d,i){
+                          return microX(i);
+                        })
+                        .y(function(d){
+                          return microY(d);
+                        });
+
+
+      var microX = d3.scale.linear().domain([0,238]).range([0,w]);
+      var microY = d3.scale.linear().range([h/2,0]);
 
       var drawSunsets = function() {
         d3.json("cities/"+city.split(",")[0].replace(" ","_")+".json",function(err,j){
           data = j;
+
+          latlng.text(Math.abs(data.lat)+(data.lat < 0 ? "S" : "N")+", "+Math.abs(data.lng)+(data.lng < 0 ? "E" : "W"));
+
+          timezone.text("("+data.timezone+")");
 
           sun.selectAll("path")
             .data([data.sun])
@@ -140,7 +375,7 @@
           updateSun();
 
           awake.selectAll("rect")
-            .data([awakeTimes])
+            .data([["0:00",awakeTimes[0]],[awakeTimes[1],"24:00"]])
             .enter()
             .append("rect");
 
@@ -153,6 +388,43 @@
 
           updateWork();
 
+          slicedWith = data.sun.slice(68,307).map(function(d){
+            return [parseTime(d[0]),parseTime(d[1])];
+          });
+
+          slicedWithout = slicedWith.map(function(d){
+            return [d[0]-1,d[1]-1];
+          });
+
+          awakeWithout.selectAll("path")
+            .data([slicedWithout.map(function(d){
+
+              var bottom = Math.max(d[0],parseTime(awakeTimes[0]));
+              var top = Math.min(d[1],parseTime(awakeTimes[1]));
+
+              return top-bottom;
+
+            })])
+            .enter()
+            .append("path")
+              .attr("class","without");
+
+          awakeWith.selectAll("path")
+            .data([slicedWith.map(function(d){
+
+              var bottom = Math.max(d[0],parseTime(awakeTimes[0]));
+              var top = Math.min(d[1],parseTime(awakeTimes[1]));
+
+              return top-bottom;
+
+            })])
+            .enter()
+            .append("path")
+              .attr("class","with");
+
+          microY.domain([0,d3.max(awakeWith.selectAll("path").data())]);
+
+          updateMicroCharts();
 
         });
       };
@@ -164,21 +436,31 @@
 
       d3.select("select#awake-times-0").on("change",function(){
         awakeTimes[0] = this.value;
+        awake.selectAll("rect")
+          .data([["0:00",awakeTimes[0]],[awakeTimes[1],"24:00"]])
+
+        if (parseTime(awakeTimes[1]) < parseTime(awakeTimes[0])) awakeTimes[1] = "24:00";
         updateAwake();
       });
 
       d3.select("select#awake-times-1").on("change",function(){
         awakeTimes[1] = this.value;
+        awake.selectAll("rect")
+          .data([["0:00",awakeTimes[0]],[awakeTimes[1],"24:00"]])
+
+        if (parseTime(awakeTimes[1]) < parseTime(awakeTimes[0])) awakeTimes[1] = "24:00";
         updateAwake();
       });
 
       d3.select("select#work-times-0").on("change",function(){
         workTimes[0] = this.value;
+        if (parseTime(workTimes[1]) < parseTime(workTimes[0])) workTimes[1] = "24:00";
         updateWork();
       });
 
       d3.select("select#work-times-1").on("change",function(){
         workTimes[1] = this.value;
+        if (parseTime(workTimes[1]) < parseTime(workTimes[0])) workTimes[1] = "24:00";
         updateWork();
       });
 
@@ -211,7 +493,7 @@
       }
 
       function updateAwake() {
-        awake.select("rect")
+        awake.selectAll("rect")
           .attr("x",0)
           .attr("width",w)
           .attr("y",function(d){
@@ -223,7 +505,7 @@
       }
 
       function updateWork() {
-        work.select("rect")
+        work.selectAll("rect")
           .attr("x",0)
           .attr("width",w)
           .attr("y",function(d){
@@ -232,6 +514,19 @@
           .attr("height",function(d){
             return y(parseTime(d[1])) - y(parseTime(d[0]));
           });
+      }
+
+      function updateMicroCharts() {
+        awakeWithout.select("path")
+          .attr("d",function(d){
+            return microLine(d);
+          });
+
+        awakeWith.select("path")
+          .attr("d",function(d){
+            return microLine(d);
+          });
+
       }
 
     </script>
